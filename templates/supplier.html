@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <div>
+            <h2>supplier List</h2>
+            <form method="GET" action="searchsupplier">
+                <a href="createsupplier">Create a supplier</a>
+                <a href="/start">Back</a>
+                <label for="search">Search supplier:</label>
+                <input type="text" id="search" name="query" placeholder="Enter supplier name">
+                <button type="submit">Search</button>
+            </form>
+            {% if totalamt >= 0 %}
+            <h3 style="color: green;">Total Amount : {{ totalamt }}</h3>
+            {% else %}
+            <h3 style="color: red;">Total Amount : {{ totalamt }}</h3>
+            {% endif %}
+            {% if totalfine >= 0 %}
+            <h3 style="color: green;">Total Fine : {{ totalfine }}</h3>
+            {% else %}
+            <h3 style="color: red;">Total Fine : {{ totalfine }}</h3>
+            {% endif %}
+    {% if allsupplier %}
+    <div id="supplierList">
+    <table>
+        <thead>
+            <tr>
+                <th>Sr No</th>
+                <th>Supplier Name</th>
+                <th>Amount</th>
+                <th>Fine</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for supplier in allsupplier %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <a href="/detailsOfSupplier/{{supplier.name.name}}">{{supplier.name.name}}</a>
+                </td>
+                {% if supplier.amt >= 0 %}
+                <td style="color: green;">{{ supplier.amt }}</td>
+                {% else %}
+                <td style="color: red;">{{ supplier.amt }}</td>
+                {% endif %}
+                {% if supplier.fine >= 0 %}
+                <td style="color: green;">{{ supplier.fine }}</td>
+                {% else %}
+                <td style="color: red;">{{ supplier.fine }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <h3>No supplier found</h3>
+    {% endif %}
+    <!-- <a href="createsupplier">Create a Supplier</a>
+    <a href="/">Back</a> -->
+</body>
+</html>

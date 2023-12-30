@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debit Entry Form for Supplier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        label {
+            margin-bottom: 10px;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="number"] {
+            padding: 8px;
+            margin-bottom: 20px;
+            width: 200px;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        a {
+            color: #ff0800;
+            text-decoration: none;
+            margin-right: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 8px 16px;
+            border: 1px solid #ff0000;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        a:hover {
+            background-color: #ff0000;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <form id="myForm" method="POST" action="/supplierentry/debit/{{name}}">
+        <h1>Payment</h1>
+        <a style="background-color: #007bff ;color: white; border: 1px solid blue;" href="/detailsOfSupplier/{{ name }}">Back</a>
+        {% csrf_token %}
+        <label for="date">Date:</label>
+        <input type="date" name="date" id="date" placeholder="YYYY-MM-DD">
+        <label for="narration">Narration:</label>
+        <input type="text" name="narration" id="narration">
+        <label for="weight">Weight:</label>
+        <input type="text" name="weight" id="weight" value="0" oninput="calculateFine()">
+        <label for="percentage">Percentage:</label>
+        <input type="text" name="percentage" id="percentage" value="0" oninput="calculateFine()">
+        <label for="rate">Rate:</label>
+        <input type="number" name="rate" id="rate" value="0" oninput="calculateAmount()">
+        <label for="fine">Fine:</label>
+        <input type="number" name="fine" id="fine" value="0" oninput="calculateAmount()">
+        <label for="amount">Amount:</label>
+        <input type="number" name="amount" id="amount" value="0" >
+        <input type="submit" value="Submit">
+    </form>
+    
+    <script>
+        function calculateFine() {
+            // Get the weight and percentage values
+            var weight = parseFloat(document.getElementById("weight").value);
+            var percentage = parseFloat(document.getElementById("percentage").value);
+    
+            // Calculate the fine (modify this calculation based on your requirements)
+            var fine = (weight * percentage) / 100;
+    
+            var roundedFine = fine.toFixed(3);
+
+            // Update the "fine" input field
+            document.getElementById("fine").value = roundedFine;
+
+            // Call the calculateAmount function to update the amount
+            calculateAmount();
+        }
+
+        function calculateAmount() {
+            // Get the rate and fine values
+            var rate = parseFloat(document.getElementById("rate").value);
+            var fine = parseFloat(document.getElementById("fine").value);
+
+            // Calculate the amount
+            var amount = (rate/1000) * fine;
+
+            // Update the "amount" input field
+            document.getElementById("amount").value = Math.round(amount / 10) * 10;
+        }
+
+        // Set the default value of the date input to the current date
+        window.onload = function() {
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById("date").setAttribute('value', today);
+        };
+    </script>
+</body>
+</html>

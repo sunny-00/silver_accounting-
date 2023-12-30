@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Accounting Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1,h3 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 8px 16px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed; /* Set the table layout to fixed */
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word; /* Allow long words to be broken and wrap to the next line */
+}
+
+th {
+    background-color: #f2f2f2;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+        
+    </style>
+</head>
+<body>
+    <h1>{{ name }}'s customer Account</h1>
+    <h3>{{ firstdate }} to {{ lastdate }}</h3>
+    <button onclick="toggleDetails()">Show Details</button>
+    <br>
+    <div id="detailsContainer" style="display: none;">
+        <input type="hidden" name="name" id="name" value="{{ currentdetails.name }}">
+        <input type="text" id="mobileInput" class="mobile" value="{{ currentdetails.mobile }}" readonly>
+        <input type="text" id="addressInput" class="address" value="{{ currentdetails.address }}" readonly>
+        <br>
+        <button onclick="editDetails()" id="editButton">Edit</button>
+        <button onclick="saveDetails()" id="saveButton" style="display: none;">Save</button>
+    </div>
+    <a href="/customer" class="button">Go back</a>
+    <a href="/customerentry/debit/{{ name }}" class="button">Add New Payment</a>
+    <a href="/customerentry/credit/{{ name }}" class="button">Add New Bill</a>
+    <a target="_blank" aria-label="Chat on WhatsApp" href="https://wa.me/{{ currentdetails.mobile}}?
+    text=
+    Pending Payment amount :- {{ debitfine }} and fine :- {{ debitamtmore }},
+    Pending Bill amount :- {{ creditfine }} and fine :- {{ creditamtmore }}
+    "> 
+    WhatsApp Reminder</a>
+    <form method="GET" action="">
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date">
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date">
+        <input type="submit" value="Filter" class="button">
+        <!-- <label style="display: block; font-weight: bold; color: #333; margin-bottom: 10px;">Pending Bills:</label>
+        <label for="pendingpayment">Amount: {{ totalcreditamt }}, Fine: {{ totalcreditfine }}</label>
+        <label style="display: block; font-weight: bold; color: #333; margin-bottom: 10px;">Pending Payments:</label>
+        <label for="pendingpayment">Amount: {{ totaldebitamt }}, Fine: {{ totaldebitfine }}</label> -->
+    </form>
+    <!-- <button id="whatsappButton">Send WhatsApp Message</button> -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th colspan="7">Payments</th>
+                <th colspan="7">Bills</th>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <th>Narration</th>
+                <th>Weight</th>
+                <th>%</th>
+                <th>Rate</th>
+                <th>Fine</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Narration</th>
+                <th>Weight</th>
+                <th>%</th>
+                <th>Rate</th>
+                <th>Fine</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- <tr>
+                <td></td>
+                <td>Opening balance</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{ opening_balance_fine_debit }}</td>
+                <td>{{ opening_balance_amt_debit }}</td>
+                <td></td>
+                <td>Opening balance</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{ opening_balance_fine_credit }}</td>
+                <td>{{ opening_balance_amt_credit }}</td>
+            </tr> -->
+            {% for entry in ledger_entries %}
+            {% if entry.ledgeroption == 'debit' %}
+                        <tr onclick="edit(this)" data-entry-id="{{ entry.id }}">
+                        <td>{{ entry.date }}</td>
+                        <td>{{ entry.narration }}</td>
+                        <td>{{ entry.weight }}</td>
+                        <td>{{ entry.percentage }}</td>
+                        <td>{{ entry.rate }}</td>
+                        <td>{{ entry.fine }}</td>
+                        <td>{{ entry.amount }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% elif entry.ledgeroption == 'credit' %}
+                    <tr onclick="edit(this)" data-entry-id="{{ entry.id }}">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ entry.date }}</td>
+                        <td>{{ entry.narration }}</td>
+                        <td>{{ entry.weight }}</td>
+                        <td>{{ entry.percentage }}</td>
+                        <td>{{ entry.rate }}</td>
+                        <td>{{ entry.fine }}</td>
+                        <td>{{ entry.amount }}</td>
+                    </tr>
+                    {% endif %}
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr style="background-color: rgb(159, 159, 159);">
+                <td></td>
+                <td>Total Payment</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{ totaldebitfine }}</td>
+                <td>{{ totaldebitamt }}</td>
+                <td></td>
+                <td>Total Bill</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{ totalcreditfine }}</td>
+                <td>{{ totalcreditamt }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="background-color: rgb(255, 85, 85);"></td>
+                <td style="background-color: rgb(255, 85, 85);">Pending payment</td>
+                <td style="background-color: rgb(255, 85, 85);"></td>
+                <td style="background-color: rgb(255, 85, 85);"></td>
+                <td style="background-color: rgb(255, 85, 85);"></td>
+                <td style="background-color: rgb(255, 85, 85);">{{ debitfine }}</td>
+                <td style="background-color: rgb(255, 85, 85);">{{ debitamtmore }}</td>
+                <td style="background-color: rgb(80, 176, 80);"></td>
+                <td style="background-color: rgb(80, 176, 80);">Pending bill</td>
+                <td style="background-color: rgb(80, 176, 80);"></td>
+                <td style="background-color: rgb(80, 176, 80);"></td>
+                <td style="background-color: rgb(80, 176, 80);"></td>
+                <td style="background-color: rgb(80, 176, 80);">{{ creditfine }}</td>
+                <td style="background-color: rgb(80, 176, 80);">{{ creditamtmore }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br>
+    <a style="background-color: red ;color: white; border: 1px solid red;" href="#" id="deleteLink" class="button">Delete {{ name }}</a>
+    <script>
+
+function toggleDetails() {
+            var detailsContainer = document.getElementById('detailsContainer');
+            var showButton = document.querySelector('button');
+            if (detailsContainer.style.display === 'none') {
+                detailsContainer.style.display = 'block';
+                showButton.textContent = 'Hide Details';
+            } else {
+                detailsContainer.style.display = 'none';
+                showButton.textContent = 'Show Details';
+            }
+        }
+
+        function editDetails() {
+            var mobileInput = document.getElementById('mobileInput');
+            var addressInput = document.getElementById('addressInput');
+            var editButton = document.getElementById('editButton');
+            var saveButton = document.getElementById('saveButton');
+
+            mobileInput.readOnly = false;
+            addressInput.readOnly = false;
+            editButton.style.display = 'none';
+            saveButton.style.display = 'inline-block';
+        }
+
+        function saveDetails() {
+            var mobile = document.getElementById('mobileInput').value;
+            var address = document.getElementById('addressInput').value;
+            var name = document.getElementById('name').value;
+            window.location.href = '/updatecustomer?mobile=' + encodeURIComponent(mobile) + '&address=' + encodeURIComponent(address) + '&name=' + encodeURIComponent(name);
+        }
+
+                // Function to handle the delete link click
+        document.getElementById("deleteLink").addEventListener("click", function(event) {
+            // Prevent the default behavior of the link
+            event.preventDefault();
+
+            // Ask the user for confirmation
+            var confirmed = confirm(`Are you sure you want to delete {{name}}'s account ???`);
+            if (confirmed) {
+                // If confirmed, redirect to the delete URL
+                var deleteUrl = "/deleteuser/{{ name }}";
+                window.location.href = deleteUrl;
+            }
+        });
+
+        function edit(row) {
+        // Get the entry ID from the row's data attribute
+        const entryId = row.getAttribute('data-entry-id');
+
+        // Construct the URL for the server request
+        const url = `/edit/${entryId}/`;
+
+        // Redirect to the server URL
+        window.location.href = url;
+    }
+    
+    // document.getElementById("whatsappButton").addEventListener("click", function() {
+    //         // Prompt the user for the message to send
+    //         var message = prompt("Enter the message to send via WhatsApp:");
+
+    //         // Check if the user entered a message
+    //         if (message !== null && message.trim() !== "") {
+    //             var url = "/whatsapp/{{ currentdetails.mobile }}?message=" + encodeURIComponent(message);
+    //             window.location.href=url
+    //         } else {
+    //             // Handle case where the user didn't enter a message
+    //         }
+    //     });
+    </script>
+</body>
+</html>
