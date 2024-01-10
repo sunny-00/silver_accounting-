@@ -14,7 +14,7 @@ import requests
 
 def index(request):
     # temp create user directly:
-    # login="silver"
+    # login="padmavati"
     # password="123"
     # user = User.objects.create_user(username=login, password=password)
     if request.method == 'POST':
@@ -97,8 +97,8 @@ def customer(request):
             creditamt=Sum('amount'),
             creditfine=Sum('fine')
             )
-            customer.amt =  (credit_totals['creditamt'] or 0) - (debit_totals['debitamt'] or 0) 
-            customer.fine = (credit_totals['creditfine'] or 0) -(debit_totals['debitfine'] or 0)
+            customer.amt =  round((credit_totals['creditamt'] or 0) - (debit_totals['debitamt'] or 0) ,2)
+            customer.fine = round((credit_totals['creditfine'] or 0) -(debit_totals['debitfine'] or 0),2)
             context['allcustomer'].append({
                 'name': current,
                 'amt': customer.amt,
@@ -166,11 +166,11 @@ def detailsOfCustomer(request,name):
         if(debit_totals['debitfine'] is not None):
             df=round(debit_totals['debitfine'],3)
         if(credit_totals['creditfine'] is not None):
-            cf=round(credit_totals['creditfine'])
+            cf=round(credit_totals['creditfine'],3)
         if(debit_totals['debitamt'] is not None):
-                dt=round(debit_totals['debitamt'])
+                dt=round(debit_totals['debitamt'],2)
         if(credit_totals['creditamt'] is not None):
-                ct=round(credit_totals['creditamt'])
+                ct=round(credit_totals['creditamt'],2)
         context = {}
         context['totaldebitfine'] = df
         context['totalcreditfine'] = cf
@@ -221,7 +221,7 @@ def addCustomerEntryDebit(request,name):
             weight=request.POST['weight']
             percentage=request.POST['percentage']
             rate=request.POST['rate']
-            fine=float(weight)*float(percentage)/100
+            fine=request.POST['fine']
             amount=request.POST['amount']
             new=listOfAll.objects.create(login=login,date=date,narration=narration,weight=weight,percentage=percentage,rate=rate,fine=fine,ledgeroption="debit",ledger='customer',name_id=name,amount=amount)
             return redirect(f"/detailsOfCustomer/{currentname}")
@@ -244,7 +244,7 @@ def addCustomerEntryCredit(request,name):
             weight=request.POST['weight']
             percentage=request.POST['percentage']
             rate=request.POST['rate']
-            fine=float(weight)*float(percentage)/100
+            fine=request.POST['fine']
             amount=request.POST['amount']
             new=listOfAll.objects.create(login=login,date=date,narration=narration,weight=weight,percentage=percentage,rate=rate,fine=fine,ledgeroption="credit",ledger='customer',name_id=name,amount=amount)
             return redirect(f"/detailsOfCustomer/{currentname}")
@@ -270,8 +270,8 @@ def supplier(request):
             creditamt=Sum('amount'),
             creditfine=Sum('fine')
             )
-            supplier.amt =  (credit_totals['creditamt'] or 0) - (debit_totals['debitamt'] or 0) 
-            supplier.fine = (credit_totals['creditfine'] or 0) -(debit_totals['debitfine'] or 0)
+            supplier.amt =  round((credit_totals['creditamt'] or 0) - (debit_totals['debitamt'] or 0),2) 
+            supplier.fine = round((credit_totals['creditfine'] or 0) -(debit_totals['debitfine'] or 0),3)   
             context['allsupplier'].append({
                 'name': current,
                 'amt': supplier.amt,
@@ -341,11 +341,11 @@ def detailsOfSupplier(request,name):
         if(debit_totals['debitfine'] is not None):
             df=round(debit_totals['debitfine'],3)
         if(credit_totals['creditfine'] is not None):
-            cf=round(credit_totals['creditfine'])
+            cf=round(credit_totals['creditfine'],3)
         if(debit_totals['debitamt'] is not None):
-                dt=round(debit_totals['debitamt'])
+                dt=round(debit_totals['debitamt'],2)
         if(credit_totals['creditamt'] is not None):
-                ct=round(credit_totals['creditamt'])
+                ct=round(credit_totals['creditamt'],2)
         context = {}
         context['totaldebitfine'] = df
         context['totalcreditfine'] = cf
@@ -396,7 +396,7 @@ def addSupplierEntryDebit(request,name):
             weight=request.POST['weight']
             percentage=request.POST['percentage']
             rate=request.POST['rate']
-            fine=float(weight)*float(percentage)/100
+            fine=request.POST['fine']
             amount=request.POST['amount']
             new=listOfAll.objects.create(login=login,date=date,narration=narration,weight=weight,percentage=percentage,rate=rate,fine=fine,ledgeroption="debit",ledger='supplier',name_id=name,amount=amount)
             return redirect(f"/detailsOfSupplier/{currentname}")
@@ -418,7 +418,7 @@ def addSupplierEntryCredit(request,name):
             weight=request.POST['weight']
             percentage=request.POST['percentage']
             rate=request.POST['rate']
-            fine=float(weight)*float(percentage)/100
+            fine=request.POST['fine']
             amount=request.POST['amount']
             new=listOfAll.objects.create(login=login,date=date,narration=narration,weight=weight,percentage=percentage,rate=rate,fine=fine,ledgeroption="credit",ledger='supplier',name_id=name,amount=amount)
             return redirect(f"/detailsOfSupplier/{currentname}")
@@ -450,8 +450,8 @@ def searchcustomer(request):
                 amt = round(amt, 2)
             if(fine is not None):
                 fine = round(fine, 3)
-            customer.amt =  (credit_totals['creditamt'] or 0) - (debit_totals['debitamt'] or 0) 
-            customer.fine = (credit_totals['creditfine'] or 0) -(debit_totals['debitfine'] or 0)
+            customer.amt =  round((credit_totals['creditamt'] or 0) - (debit_totals['debitamt'] or 0),2 )
+            customer.fine = round((credit_totals['creditfine'] or 0) -(debit_totals['debitfine'] or 0),3 )
             context['allcustomer'].append({
                 'name': current,
                 'amt': customer.amt,
@@ -490,8 +490,8 @@ def searchsupplier(request):
                 amt = round(amt, 2)
             if(fine is not None):
                 fine = round(fine, 3)
-            supplier.amt =  (credit_totals['creditamt'] or 0) - (debit_totals['debitamt'] or 0) 
-            supplier.fine = (credit_totals['creditfine'] or 0) -(debit_totals['debitfine'] or 0)
+            supplier.amt =  round((credit_totals['creditamt'] or 0) - (debit_totals['debitamt'] or 0),2 )
+            supplier.fine = round((credit_totals['creditfine'] or 0) -(debit_totals['debitfine'] or 0),3)
             context['allsupplier'].append({
                 'name': current,
                 'amt': supplier.amt,
@@ -617,11 +617,3 @@ def whatsapp(request,number):
     else:
             # Handle failure (e.g., return an error message)
         return HttpResponse("Failed to send WhatsApp message.")
-
-
-git init
-git add -A
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/sunny-00/silver_accounting-.git
-git push -u origin main

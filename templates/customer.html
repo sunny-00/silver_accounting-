@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer List</title>
-    <h1>{{ firstdate }}</h1>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +15,7 @@
             width: 100%;
         }
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #a5a4a4;
             padding: 8px;
         }
         th {
@@ -33,39 +32,67 @@
         a:hover {
             text-decoration: underline;
         }
+        #atag{
+            background-color: #007bff; 
+            color: #ffffff;
+            text-decoration: none;
+            margin-right: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 8px 16px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        h1{
+            color: rgb(17, 0, 255)
+        }
+        span{
+            font-size: 25px;
+        }
     </style>
 </head>
-<body>
+<body> 
     <div class="grid-container">
         <div>
-            <h2>Customer List</h2>
-            <form method="GET" action="searchcustomer">
-                <a href="createcustomer">Create a customer</a>
-                <a href="/start">Back</a>
-                <label for="search">Search Customer:</label>
-                <input type="text" id="search" name="query" placeholder="Enter customer name">
-                <button type="submit">Search</button>
-            </form>
+            <h1 style="text-align: center;"><i>Customer List</i></h1>
+            <div style="text-align: center;">
+                {% if totalamt >= 0 %}
+                <span style="color: green;">Total Amount : {{ totalamt }}</span>
+                {% else %}
+                <span style="color: red;">Total Amount : {{ totalamt }}</span>
+                {% endif %}
+                {% if totalfine >= 0 %}
+                <span style="color: green;">Total Fine : {{ totalfine }}</span>
+                {% else %}
+                <span style="color: red;">Total Fine : {{ totalfine }}</span>
+                {% endif %}
+            </div>
+            <br>
+            <div style="display: flex; justify-content: center;">
+                <a href="/start" id="atag">Back</a>
+            </div>
+            <table>
+                <form method="GET" action="searchcustomer">
+                <tr style="background-color: #f2f2f2;">
+                        <th><a href="createcustomer">Create a customer</a></th>
+                        <th colspan="3"><label for="search" style="color: #007bff;">Search Customer:</label>
+                        <input type="text" id="search" name="query" placeholder="Enter customer name">
+                        <button type="submit">Search</button></th>
+                </tr>
+                </form>
+            </table>
             {% if allcustomer %}
-            {% if totalamt >= 0 %}
-            <h3 style="color: green;">Total Amount : {{ totalamt }}</h3>
-            {% else %}
-            <h3 style="color: red;">Total Amount : {{ totalamt }}</h3>
-            {% endif %}
-            {% if totalfine >= 0 %}
-            <h3 style="color: green;">Total Fine : {{ totalfine }}</h3>
-            {% else %}
-            <h3 style="color: red;">Total Fine : {{ totalfine }}</h3>
-            {% endif %}
-
             <div id="customerList">
             <table>
                 <thead>
                     <tr>
-                        <th>Sr No</th>
-                        <th>Customer Name</th>
-                        <th>Amount</th>
-                        <th>Fine</th>
+                        <th style="color: #FB48C4;">Sr No</th>
+                        <th style="color: #FB48C4;">Customer Name</th>
+                        <th style="color: #FB48C4;">Amount</th>
+                        <th style="color: #FB48C4;">Fine</th>
                     </tr>
                 </thead>
                 <tbody id="customerTableBody">
@@ -89,6 +116,7 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <br>                
             </div>
             {% else %}
             <h3>No customers found</h3>

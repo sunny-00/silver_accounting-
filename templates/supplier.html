@@ -15,7 +15,7 @@
             width: 100%;
         }
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #a5a4a4;
             padding: 8px;
         }
         th {
@@ -32,38 +32,68 @@
         a:hover {
             text-decoration: underline;
         }
+        #atag{
+            background-color: #007bff; 
+            color: #ffffff;
+            text-decoration: none;
+            margin-right: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 8px 16px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        h1{
+            color: rgb(17, 0, 255)
+        }
+        span{
+            font-size: 25px;
+        }
     </style>
 </head>
 <body>
     <div class="grid-container">
         <div>
-            <h2>supplier List</h2>
+            <h1 style="text-align: center;"><i>Supplier List</i></h1>
+            <div style="text-align: center;">
+                {% if totalamt >= 0 %}
+                <span style="color: green;">Total Amount : {{ totalamt }}</span>
+                {% else %}
+                <span style="color: red;">Total Amount : {{ totalamt }}</span>
+                {% endif %}
+                {% if totalfine >= 0 %}
+                <span style="color: green;">Total Fine : {{ totalfine }}</span>
+                {% else %}
+                <span style="color: red;">Total Fine : {{ totalfine }}</span>
+                {% endif %}
+            </div>
+            <br>
+            <div style="display: flex; justify-content: center;">
+                <a href="/start" id="atag">Back</a>
+            </div>
+            <table>
             <form method="GET" action="searchsupplier">
-                <a href="createsupplier">Create a supplier</a>
-                <a href="/start">Back</a>
-                <label for="search">Search supplier:</label>
+                <tr>
+                <th><a href="createsupplier">Create a supplier</a></th>
+                <th><label for="search">Search supplier:</label>
                 <input type="text" id="search" name="query" placeholder="Enter supplier name">
                 <button type="submit">Search</button>
+                </th>
+                    </tr>
             </form>
-            {% if totalamt >= 0 %}
-            <h3 style="color: green;">Total Amount : {{ totalamt }}</h3>
-            {% else %}
-            <h3 style="color: red;">Total Amount : {{ totalamt }}</h3>
-            {% endif %}
-            {% if totalfine >= 0 %}
-            <h3 style="color: green;">Total Fine : {{ totalfine }}</h3>
-            {% else %}
-            <h3 style="color: red;">Total Fine : {{ totalfine }}</h3>
-            {% endif %}
+        </table>
     {% if allsupplier %}
     <div id="supplierList">
     <table>
         <thead>
             <tr>
-                <th>Sr No</th>
-                <th>Supplier Name</th>
-                <th>Amount</th>
-                <th>Fine</th>
+                <th style="color: #FB48C4;">Sr No</th>
+                <th style="color: #FB48C4;">Customer Name</th>
+                <th style="color: #FB48C4;">Amount</th>
+                <th style="color: #FB48C4;">Fine</th>
             </tr>
         </thead>
         <tbody>
@@ -87,6 +117,7 @@
             {% endfor %}
         </tbody>
     </table>
+    <br>
     </div>
     {% else %}
     <h3>No supplier found</h3>

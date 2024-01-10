@@ -16,14 +16,21 @@
             flex-direction: column;
         }
         a {
-            display: block;
-            margin-bottom: 10px;
-            color: #007bff;
+            font-size: 22px;
+            color: #ffffff;
+            background-color: #007bff;
             text-decoration: none;
-            font-size: 50px;
+            margin-right: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 8px 16px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
         a:hover {
-            text-decoration: underline;
+            background-color: #ffffff;
+            color: #007bff;
         }
         .button-container {
             display: flex;
@@ -33,9 +40,26 @@
         .button-container a {
             margin-bottom: 10px;
         }
+        h1 {
+            font-size: 50px;
+            display: flex; /* Ensure both spans are displayed on the same line */
+            flex-direction: row; /* Display spans in a row */
+            align-items: center; /* Center spans vertically */
+        }
+        h1 span {
+            background-image: linear-gradient(to right, purple, rgb(47, 47, 245)); /* Gradient from purple to blue */
+            -webkit-background-clip: text; /* Apply the gradient to the text only */
+            color: transparent; /* Hide the original text color */
+            margin: 0; /* Remove any default margin */
+            padding: 0; /* Remove any default padding */
+        }
+        h1 span:first-child {
+            margin-right: 5px; /* Add spacing between the spans */
+        }
     </style>
 </head>
 <body>
+    <h1><span>Padmavati</span><span>Ornaments</span></h1>
     <div class="button-container">
         <a href="/customer">Customer</a>
         <a href="/supplier">Supplier</a>
@@ -44,3 +68,4 @@
     </div>
 </body>
 </html>
+

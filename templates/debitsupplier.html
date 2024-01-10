@@ -61,55 +61,112 @@
         <label for="date">Date:</label>
         <input type="date" name="date" id="date" placeholder="YYYY-MM-DD">
         <label for="narration">Narration:</label>
-        <input type="text" name="narration" id="narration">
+        <input type="text" name="narration" id="narration" required>
         <label for="weight">Weight:</label>
-        <input type="text" name="weight" id="weight" value="0" oninput="calculateFine()">
+        <input type="number" step="0.001" name="weight" id="weight" value="0" oninput="calculateFine()">
         <label for="percentage">Percentage:</label>
-        <input type="text" name="percentage" id="percentage" value="0" oninput="calculateFine()">
-        <label for="rate">Rate:</label>
-        <input type="number" name="rate" id="rate" value="0" oninput="calculateAmount()">
+        <input type="number" step="0.01" name="percentage" id="percentage" value="0" oninput="calculateFine()">
         <label for="fine">Fine:</label>
-        <input type="number" name="fine" id="fine" value="0" oninput="calculateAmount()">
+        <input type="number" step="0.001" name="fine" id="fine" value="0" oninput="calculateAmount()">
+        <label for="rate">Rate:</label>
+        <input type="number" step="0.01" name="rate" id="rate" value="0" oninput="calculateAmount()">
         <label for="amount">Amount:</label>
-        <input type="number" name="amount" id="amount" value="0" >
+        <input type="number" step="0.01" name="amount" value="0" id="amount">
         <input type="submit" value="Submit">
     </form>
     
     <script>
+        function validateForm(event) {
+            // Get all input fields
+            var inputs = document.querySelectorAll('input[type="date"], input[type="number"]');
+        
+            // Flag to track if any field is empty
+            var isEmpty = false;
+        
+            // Check if any input field is empty
+            inputs.forEach(function(input) {
+                if (input.value.trim() === "" || (input.type === "number" && isNaN(parseFloat(input.value)))) {
+                    isEmpty = true;
+                    input.style.border = "1px solid red"; // Highlight the empty field
+                } else {
+                    input.style.border = "1px solid #ced4da"; // Reset border if not empty
+                }
+            });
+        
+            // Prevent form submission if any field is empty
+            if (isEmpty) {
+                event.preventDefault(); // Prevent the default form submission behavior
+                alert("Please fill in all the fields."); // Display an alert message to the user
+            }
+        }
+        
+        // Add event listener to the form for the submit event
+        document.getElementById("myForm").addEventListener("submit", validateForm);
         function calculateFine() {
             // Get the weight and percentage values
-            var weight = parseFloat(document.getElementById("weight").value);
-            var percentage = parseFloat(document.getElementById("percentage").value);
-    
+            var weightInput = document.getElementById("weight");
+            var percentageInput = document.getElementById("percentage");
+            var weight = parseFloat(weightInput.value) || 0; // Use 0 if the value is empty or cannot be parsed
+            var percentage = parseFloat(percentageInput.value) || 0; // Use 0 if the value is empty or cannot be parsed
+        
+            // Validate input
+            if (isNaN(weight) || isNaN(percentage) || weightInput.value.trim() === "" || percentageInput.value.trim() === "") {
+                // Display error and prevent form submission
+                weightInput.style.border = isNaN(weight) || weightInput.value.trim() === "" ? "1px solid red" : "1px solid #ced4da";
+                percentageInput.style.border = isNaN(percentage) || percentageInput.value.trim() === "" ? "1px solid red" : "1px solid #ced4da";
+                return;
+            } else {
+                // Reset borders if validation passed
+                weightInput.style.border = "1px solid #ced4da";
+                percentageInput.style.border = "1px solid #ced4da";
+            }
+        
             // Calculate the fine (modify this calculation based on your requirements)
             var fine = (weight * percentage) / 100;
-    
-            var roundedFine = fine.toFixed(3);
-
-            // Update the "fine" input field
-            document.getElementById("fine").value = roundedFine;
-
+            fine = Math.round(fine * 1000) / 1000; // Round to three decimal places
+        
+            // Update the "fine" input field with the rounded value
+            document.getElementById("fine").value = fine.toFixed(3); // Display with up to three decimal places
+        
             // Call the calculateAmount function to update the amount
             calculateAmount();
         }
-
+        
         function calculateAmount() {
             // Get the rate and fine values
-            var rate = parseFloat(document.getElementById("rate").value);
-            var fine = parseFloat(document.getElementById("fine").value);
-
+            var rateInput = document.getElementById("rate");
+            var fineInput = document.getElementById("fine");
+            var rate = parseFloat(rateInput.value) || 0; // Use 0 if the value is empty or cannot be parsed
+            var fine = parseFloat(fineInput.value) || 0; // Use 0 if the value is empty or cannot be parsed
+        
+            // Validate input
+            if (isNaN(rate) || rateInput.value.trim() === "" || isNaN(fine) || fineInput.value.trim() === "") {
+                // Display error and prevent form submission
+                rateInput.style.border = isNaN(rate) || rateInput.value.trim() === "" ? "1px solid red" : "1px solid #ced4da";
+                fineInput.style.border = isNaN(fine) || fineInput.value.trim() === "" ? "1px solid red" : "1px solid #ced4da";
+                return;
+            } else {
+                // Reset borders if validation passed
+                rateInput.style.border = "1px solid #ced4da";
+                fineInput.style.border = "1px solid #ced4da";
+            }
+        
             // Calculate the amount
-            var amount = (rate/1000) * fine;
-
-            // Update the "amount" input field
-            document.getElementById("amount").value = Math.round(amount / 10) * 10;
+            var amount = (rate / 1000) * fine;
+        
+            // Round the amount to two decimal places
+            amount = Math.round(amount * 100) / 100; // Rounds to two decimal places
+        
+            // Update the "amount" input field with the rounded amount
+            document.getElementById("amount").value = amount.toFixed(2); // Display with up to two decimal places
         }
-
+        
         // Set the default value of the date input to the current date
         window.onload = function() {
             var today = new Date().toISOString().split('T')[0];
             document.getElementById("date").setAttribute('value', today);
         };
-    </script>
+        
+            </script>
 </body>
 </html>
